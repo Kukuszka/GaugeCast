@@ -1,1 +1,0 @@
-"""PDE residual calculations."""
