@@ -13,7 +13,7 @@ Adrian Kucia, Edward Rollason, Wai Lok Woo
 GaugeCast++ is a physics-informed sparse-gauge forecasting framework for localized flood prediction. It combines a gauge-conditioned pullback operator, semigroup-consistent phase-transport learning, and decoupled inverse rainfall ambiguity modelling.
 
 <p align="center">
-  <img src="assets/Contribution1.png" width="900" alt="GaugeCast++ architecture">
+  <img src="assets/Contribution1.png" width="900" alt="GaugeCast++ overview">
 </p>
 
 > **Paper status:** NeurIPS 2026 paper link and publication details will be added when available.
@@ -22,33 +22,45 @@ GaugeCast++ is a physics-informed sparse-gauge forecasting framework for localiz
 
 - **2026-11-15:** Initial public repository scaffold and project README created.
 
-## Overview
+## Method Overview
 
-GaugeCast++ targets localized flood forecasting from sparse stream-gauge observations. The framework structures forecasting around three components:
+GaugeCast++ is designed around the failure modes that are especially important in sparse-gauge flood forecasting: transport-dominated dynamics, temporal misalignment of flood events, and uncertainty in future rainfall forcing. The framework combines physics-informed latent dynamics with event-aware forecasting and a separate post-hoc uncertainty diagnostic.
 
-### Contribution 1 – Gauge-Conditioned Pullback
-
-GaugeCast++ learns a diffeomorphic coordinate transformation that suppresses residual transport and produces a better-conditioned latent forecasting problem.
+### Gauge-Conditioned Pullback Dynamics
 
 <p align="center">
-  <img src="assets/neurips_draft_cotnributnio1%20(1).png" width="800" alt="Gauge-conditioned pullback">
+  <img src="assets/Contribution1_Diagram.png" width="100%" alt="Gauge-conditioned pullback dynamics">
 </p>
 
-### Contribution 2 – Semigroup-Consistent Phase Transport
+GaugeCast++ does not evolve flood dynamics directly in the original observation coordinates. Historical water level, rainfall, and forecast rainfall are encoded into latent hydrological states and storage/context representations. A **gauge-conditioned coordinate map** $G_\psi$ then learns a sample-dependent transformation of the latent domain.
 
-The model enforces consistency between direct long-horizon forecasts and composed shorter-horizon evolution while explicitly penalizing flood-event phase drift.
+Automatic differentiation provides the derivatives of the learned coordinate field, which define the residual transport
+
+$$
+B_\psi = \partial_\tau \phi_\psi + a\,\partial_\xi \phi_\psi - \nu\,\partial_{\xi\xi}\phi_\psi .
+$$
+
+Training suppresses $B_\psi$, encouraging the learned coordinate system to remove explicit transport from the latent evolution. The resulting pullback therefore acts as an **operator preconditioner**, transforming transport-dominated flood dynamics into a better-conditioned latent forecasting problem.
+
+---
+
+### Decoupled Inverse Rainfall Ambiguity
 
 <p align="center">
-  <img src="assets/Contribution2_Diagram.pdf" width="800" alt="Semigroup-consistent phase transport">
+  <img src="assets/Contribution3_Diagram.png" width="100%" alt="Decoupled inverse rainfall ambiguity">
 </p>
 
-### Contribution 3 – Inverse Rainfall Ambiguity
+Forecast errors can arise either from the hydrological model itself or from inaccurate future rainfall information. GaugeCast++ separates these two sources through a **decoupled inverse rainfall ambiguity module**.
 
-A separate inverse module estimates forcing-side uncertainty caused by imperfect future rainfall without modifying the deterministic hydrograph forecast.
+The trained GaugeCast++ predictor is first frozen. Its hydrograph forecast, latent representation, and physics residual are then used as evidence for an inverse model
 
-<p align="center">
-  <img src="assets/final_c3%20(2).png" width="800" alt="Inverse rainfall ambiguity">
-</p>
+$$
+q_\psi(\delta r_t \mid Z_t),
+$$
+
+which estimates a posterior distribution over the unknown rainfall discrepancy. The inferred uncertainty is propagated through the rainfall-to-stage sensitivity of the frozen predictor to obtain a forcing-specific ambiguity score.
+
+Importantly, this module is **diagnostic rather than corrective**: it does not modify the deterministic GaugeCast++ hydrograph. Instead, it identifies forecast windows in which uncertainty can plausibly be attributed to imperfect future rainfall forcing.
 
 ## Installation
 
