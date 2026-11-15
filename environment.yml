@@ -1,9 +1,19 @@
 name: gaugecast
+
 channels:
-  - conda-forge
   - pytorch
+  - conda-forge
+
 dependencies:
-  - python>=3.10
+  - python=3.12
+  - numpy
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - pyyaml
+  - pytorch
   - pip
   - pip:
+      - huggingface_hub
+      - jupyter
       - -r requirements.txt
