@@ -13,7 +13,7 @@ Adrian Kucia, Edward Rollason, Wai Lok Woo
 GaugeCast++ is a physics-informed sparse-gauge forecasting framework for localized flood prediction. It combines a gauge-conditioned pullback operator, semigroup-consistent phase-transport learning, and decoupled inverse rainfall ambiguity modelling.
 
 <p align="center">
-  <img src="assets/Contribution1_Diagram" width="900" alt="GaugeCast++ architecture">
+  <img src="assets/Contribution1_Diagram.png" width="900" alt="GaugeCast++ architecture">
 </p>
 
 > **Paper status:** NeurIPS 2026 paper link and publication details will be added when available.
@@ -31,7 +31,7 @@ GaugeCast++ targets localized flood forecasting from sparse stream-gauge observa
 GaugeCast++ learns a diffeomorphic coordinate transformation that suppresses residual transport and produces a better-conditioned latent forecasting problem.
 
 <p align="center">
-  <img src="assets/Contribution1" width="800" alt="Gauge-conditioned pullback">
+  <img src="assets/Contribution1.png" width="800" alt="Gauge-conditioned pullback">
 </p>
 
 ### Contribution 2 – Semigroup-Consistent Phase Transport
@@ -47,7 +47,7 @@ The model enforces consistency between direct long-horizon forecasts and compose
 A separate inverse module estimates forcing-side uncertainty caused by imperfect future rainfall without modifying the deterministic hydrograph forecast.
 
 <p align="center">
-  <img src="assets/Contribution3_Diagram" width="800" alt="Inverse rainfall ambiguity">
+  <img src="assets/Contribution3_Diagram.png" width="800" alt="Inverse rainfall ambiguity">
 </p>
 
 ## Installation
