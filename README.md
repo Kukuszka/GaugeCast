@@ -38,20 +38,6 @@ GaugeCast++ does not evolve flood dynamics directly in the original observation 
 
 A **gauge-conditioned coordinate map** learns a sample-dependent transformation of the latent domain. Automatic differentiation provides the spatial and temporal derivatives of this learned coordinate field, defining the residual transport coefficient
 
-$$
-B_\psi
-=
-\partial_\tau \phi_\psi
-+
-a\,\partial_\xi \phi_\psi
--
-\nu\,\partial_{\xi\xi}\phi_\psi .
-$$
-
-Training explicitly suppresses the pullback residual \(B_\psi\), encouraging the learned coordinate system to reduce transport dominance in the transformed dynamics.
-
-The pullback therefore acts as an **operator preconditioner**: instead of forecasting directly in a transport-dominated coordinate system, GaugeCast++ learns coordinates in which the induced latent evolution is better conditioned and increasingly diffusion dominated.
-
 ---
 
 ### 2. Semigroup-Consistent Phase-Transport Learning
@@ -81,13 +67,7 @@ Forecast errors can arise from deficiencies in the hydrological predictor, but t
 
 GaugeCast++ separates these sources through a **decoupled inverse rainfall ambiguity module**.
 
-The trained deterministic predictor is frozen. Its hydrograph forecast, latent representation, rainfall information, and pullback-physics residual are then used as evidence for an inverse model
-
-$$
-q_\psi(\delta r_t \mid Z_t),
-$$
-
-which estimates a posterior distribution over unresolved future-rainfall discrepancy.
+The trained deterministic predictor is frozen. Its hydrograph forecast, latent representation, rainfall information, and pullback-physics residual are then used as evidence for an inverse model which estimates a posterior distribution over unresolved future-rainfall discrepancy.
 
 The inferred rainfall uncertainty is propagated through the rainfall-to-stage sensitivity of the frozen forecasting system to obtain a **forcing-specific ambiguity score**.
 
