@@ -34,12 +34,6 @@ GaugeCast++ is designed around the failure modes that are especially important i
 
 GaugeCast++ does not evolve flood dynamics directly in the original observation coordinates. Historical water level, rainfall, and forecast rainfall are encoded into latent hydrological states and storage/context representations. A **gauge-conditioned coordinate map** $G_\psi$ then learns a sample-dependent transformation of the latent domain.
 
-Automatic differentiation provides the derivatives of the learned coordinate field, which define the residual transport
-
-$$
-B_\psi = \partial_\tau \phi_\psi + a\,\partial_\xi \phi_\psi - \nu\,\partial_{\xi\xi}\phi_\psi .
-$$
-
 Training suppresses $B_\psi$, encouraging the learned coordinate system to remove explicit transport from the latent evolution. The resulting pullback therefore acts as an **operator preconditioner**, transforming transport-dominated flood dynamics into a better-conditioned latent forecasting problem.
 
 ---
@@ -53,11 +47,6 @@ Training suppresses $B_\psi$, encouraging the learned coordinate system to remov
 Forecast errors can arise either from the hydrological model itself or from inaccurate future rainfall information. GaugeCast++ separates these two sources through a **decoupled inverse rainfall ambiguity module**.
 
 The trained GaugeCast++ predictor is first frozen. Its hydrograph forecast, latent representation, and physics residual are then used as evidence for an inverse model
-
-$$
-q_\psi(\delta r_t \mid Z_t),
-$$
-
 which estimates a posterior distribution over the unknown rainfall discrepancy. The inferred uncertainty is propagated through the rainfall-to-stage sensitivity of the frozen predictor to obtain a forcing-specific ambiguity score.
 
 Importantly, this module is **diagnostic rather than corrective**: it does not modify the deterministic GaugeCast++ hydrograph. Instead, it identifies forecast windows in which uncertainty can plausibly be attributed to imperfect future rainfall forcing.
