@@ -93,19 +93,18 @@ conda activate gaugecast
 
 ### 2. Data
 
-The project is intended for UK river-gauge datasets. The repository does not include the datasets. Create `data/` and place your prepared data there. The site configuration files are in `configs/`:
+The UK river-gauge dataset is hosted on the [Hugging Face Hub](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset). Download it into the repository's `data/` directory with the Hugging Face CLI:
 
-```text
-data/
-├── Acomb_Garden_House/
-├── Acomb_Millersfield/
-├── Stocksfield/
-├── Nunnykirk/
-├── Knitsley/
-└── Kielder/
+```bash
+python -m pip install huggingface_hub
+hf download Kukushkah/GaugeCast_EA_Dataset \
+  --repo-type dataset \
+  --local-dir data/GaugeCast_EA_Dataset
 ```
 
-See [`data/README.md`](data/README.md) for the current notes. Dataset preprocessing instructions and a confirmed data-file format have not yet been added, so the directory names above are an organizational example.
+The downloaded files will be placed under `data/GaugeCast_EA_Dataset/`. See the dataset's [Hugging Face page](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset) for its description and files. The repository's `data/` contents are ignored by Git, so the dataset will remain local and will not be committed.
+
+The site configuration files are in `configs/` for Acomb Garden House, Acomb Millersfield, Stocksfield, Nunnykirk, Knitsley, and Kielder. Dataset preprocessing instructions and the expected input-file schema have not yet been added to this repository. Also, the training and evaluation scripts are placeholders, so downloading the dataset alone does not yet enable model training or evaluation.
 
 ### 3. Training
 
