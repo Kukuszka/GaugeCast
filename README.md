@@ -4,8 +4,6 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Official PyTorch implementation of:
-
 **GaugeCast++: A Physics-Informed Latent Forecasting System for Localized Flood Prediction**  
 Adrian Kucia, Edward Rollason, Wai Lok Woo  
 **NeurIPS 2026**
@@ -47,6 +45,22 @@ The trained GaugeCast++ predictor is first frozen. Its hydrograph forecast, late
 which estimates a posterior distribution over the unknown rainfall discrepancy. The inferred uncertainty is propagated through the rainfall-to-stage sensitivity of the frozen predictor to obtain a forcing-specific ambiguity score.
 
 Importantly, this module is **diagnostic rather than corrective**: it does not modify the deterministic GaugeCast++ hydrograph. Instead, it identifies forecast windows in which uncertainty can plausibly be attributed to imperfect future rainfall forcing.
+
+## Main Results
+
+GaugeCast++ achieves the strongest overall performance across the six primary UK catchments, with consistent gains in both full test-set forecasting and flood-event prediction.
+
+<p align="center">
+  <img src="assets/Benchmark_Table.png" width="100%" alt="Main Benchmark Table">
+</p>
+
+## Ablation Study
+
+The ablation study evaluates the contribution of the gauge transform, pullback PDE residual, storage dynamics, event-residual branch, and semigroup/phase-consistency objectives.
+
+<p align="center">
+  <img src="assets/Ablation_Table.png" width="100%" alt="Ablation Benchmark Table">
+</p>
 
 ## Installation
 
