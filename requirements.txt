@@ -1,5 +1,8 @@
 numpy
 pandas
-PyYAML
 matplotlib
+scikit-learn
 torch
+PyYAML
+huggingface_hub
+jupyter
