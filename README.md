@@ -104,8 +104,6 @@ hf download Kukushkah/GaugeCast_EA_Dataset \
 
 The downloaded files will be placed under `data/GaugeCast_EA_Dataset/`. See the dataset's [Hugging Face page](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset) for its description and files. The repository's `data/` contents are ignored by Git, so the dataset will remain local and will not be committed.
 
-The site configuration files are in `configs/` for Acomb Garden House, Acomb Millersfield, Stocksfield, Nunnykirk, Knitsley, and Kielder. Dataset preprocessing instructions and the expected input-file schema have not yet been added to this repository. Also, the training and evaluation scripts are placeholders, so downloading the dataset alone does not yet enable model training or evaluation.
-
 ### 3. Training
 
 Training is not implemented yet: `train.py` and `scripts/train_all.sh` are placeholders. Once implemented, select a site configuration from `configs/` (for example, `configs/stocksfield.yaml`) and follow the training command documented here.
