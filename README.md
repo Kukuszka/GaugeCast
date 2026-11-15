@@ -1,4 +1,4 @@
-# GaugeCast++: A Physics-Informed Latent Forecasting System for Localized Flood Prediction
+# GaugeCast++
 
 [![NeurIPS 2026](https://img.shields.io/badge/NeurIPS-2026-blue.svg)]()
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)]()
