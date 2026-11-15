@@ -39,7 +39,7 @@ GaugeCast++ learns a diffeomorphic coordinate transformation that suppresses res
 The model enforces consistency between direct long-horizon forecasts and composed shorter-horizon evolution while explicitly penalizing flood-event phase drift.
 
 <p align="center">
-  <img src="assets/Contribution2_Diagram.png" width="800" alt="Semigroup-consistent phase transport">
+  <img src="assets/Contribution2_Diagram.pdf" width="800" alt="Semigroup-consistent phase transport">
 </p>
 
 ### Contribution 3 – Inverse Rainfall Ambiguity
