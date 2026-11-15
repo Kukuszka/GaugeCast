@@ -1,0 +1,1 @@
+"""Event residual model components."""
