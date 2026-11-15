@@ -10,7 +10,6 @@ Adrian Kucia, Edward Rollason, Wai Lok Woo
 
 GaugeCast++ is a physics-informed sparse-gauge forecasting framework for localized flood prediction. It combines a gauge-conditioned pullback operator, semigroup-consistent phase-transport learning, and decoupled inverse rainfall ambiguity modelling.
 
-
 > **Paper status:** NeurIPS 2026 paper link and publication details will be added when available.
 
 ## News
@@ -29,6 +28,12 @@ GaugeCast++ is designed around the failure modes that are especially important i
 
 GaugeCast++ does not evolve flood dynamics directly in the original observation coordinates. Historical water level, rainfall, and forecast rainfall are encoded into latent hydrological states and storage/context representations. A **gauge-conditioned coordinate map** $G_\psi$ then learns a sample-dependent transformation of the latent domain.
 
+Automatic differentiation provides the derivatives of the learned coordinate field, which define the residual transport
+
+$$
+B_\psi = \partial_\tau \phi_\psi + a\,\partial_\xi \phi_\psi - \nu\,\partial_{\xi\xi}\phi_\psi .
+$$
+
 Training suppresses $B_\psi$, encouraging the learned coordinate system to remove explicit transport from the latent evolution. The resulting pullback therefore acts as an **operator preconditioner**, transforming transport-dominated flood dynamics into a better-conditioned latent forecasting problem.
 
 ---
@@ -42,6 +47,11 @@ Training suppresses $B_\psi$, encouraging the learned coordinate system to remov
 Forecast errors can arise either from the hydrological model itself or from inaccurate future rainfall information. GaugeCast++ separates these two sources through a **decoupled inverse rainfall ambiguity module**.
 
 The trained GaugeCast++ predictor is first frozen. Its hydrograph forecast, latent representation, and physics residual are then used as evidence for an inverse model
+
+$$
+q_\psi(\delta r_t \mid Z_t),
+$$
+
 which estimates a posterior distribution over the unknown rainfall discrepancy. The inferred uncertainty is propagated through the rainfall-to-stage sensitivity of the frozen predictor to obtain a forcing-specific ambiguity score.
 
 Importantly, this module is **diagnostic rather than corrective**: it does not modify the deterministic GaugeCast++ hydrograph. Instead, it identifies forecast windows in which uncertainty can plausibly be attributed to imperfect future rainfall forcing.
@@ -62,53 +72,59 @@ The ablation study evaluates the contribution of the gauge transform, pullback P
   <img src="assets/Ablation_Table.png" width="100%" alt="Ablation Benchmark Table">
 </p>
 
-## Installation
+## Getting Started
 
-Create an environment and install the dependencies:
+### 1. Installation
+
+Clone this repository and install its Python dependencies:
+
+```bash
+git clone https://github.com/Kukuszka/GaugeCast-.git
+cd GaugeCast-
+python -m pip install -r requirements.txt
+```
+
+Alternatively, create the Conda environment defined in `environment.yml`:
 
 ```bash
 conda env create -f environment.yml
 conda activate gaugecast
 ```
 
-Or install with pip:
+### 2. Data
 
-```bash
-python -m pip install -r requirements.txt
+The project is intended for UK river-gauge datasets. The repository does not include the datasets. Create `data/` and place your prepared data there. The site configuration files are in `configs/`:
+
+```text
+data/
+├── Acomb_Garden_House/
+├── Acomb_Millersfield/
+├── Stocksfield/
+├── Nunnykirk/
+├── Knitsley/
+└── Kielder/
 ```
 
-## Data
+See [`data/README.md`](data/README.md) for the current notes. Dataset preprocessing instructions and a confirmed data-file format have not yet been added, so the directory names above are an organizational example.
 
-Place input datasets in `data/`. The repository does not currently include datasets; see [`data/README.md`](data/README.md) for notes. Data files are excluded from version control by `.gitignore`.
+### 3. Training
 
-## Quick Start
+Training is not implemented yet: `train.py` and `scripts/train_all.sh` are placeholders. Once implemented, select a site configuration from `configs/` (for example, `configs/stocksfield.yaml`) and follow the training command documented here.
 
-The repository currently contains a project scaffold. Training, evaluation, and prediction entry points are placeholders and will raise `NotImplementedError` until their workflows are implemented. The example below shows the intended interface, not a runnable command yet:
+### 4. Evaluation
 
-```bash
-python train.py --config configs/acomb_garden_house.yaml
-```
+Evaluation is not implemented yet. `evaluate.py` is currently a placeholder, and no checkpoint evaluation command is available yet.
 
-## Training
+### 5. Reproducing Paper Results
 
-Training functionality is not implemented yet. The `train.py` entry point and `scripts/train_all.sh` are placeholders. Site-specific configuration files are in `configs/`.
-
-## Evaluation
-
-Evaluation functionality is not implemented yet. The `evaluate.py` entry point is a placeholder.
-
-## Reproducing Paper Results
-
-The scripts in `scripts/` are scaffold placeholders. Commands to reproduce the paper's tables, ablations, and uncertainty analysis will be added with the training and evaluation implementation:
+The scripts in `scripts/` are currently placeholders, so they do not yet reproduce paper results. The planned entry points include:
 
 - `scripts/reproduce_table1.sh`
 - `scripts/reproduce_table3.sh`
 - `scripts/reproduce_ablation.sh`
 - `scripts/reproduce_uncertainty.sh`
 
-## Results
-
-No results are included yet. Generated outputs can be stored in `results/`; see [`results/README.md`](results/README.md).
+When implemented, experiment outputs can be written to `results/`; see [`results/README.md`](results/README.md).
 
 ## Pretrained Models
 
@@ -131,8 +147,7 @@ The repository also includes [`CITATION.cff`](CITATION.cff).
 
 ## Acknowledgements
 
-This project is funded by DEFRA (NUM015) as part of the £200 million Flood and Coastal Innovation Programmes which is managed by the
-Environment Agency. The programmes will drive innovation in flood and coastal resilience and adaptation to a changing climate.
+This project is funded by DEFRA (NUM015) as part of the £200 million Flood and Coastal Innovation Programmes which is managed by the Environment Agency. The programmes will drive innovation in flood and coastal resilience and adaptation to a changing climate.
 
 ## Contact
 
