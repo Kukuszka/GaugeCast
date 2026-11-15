@@ -10,14 +10,6 @@
 **Adrian Kucia, Edward Rollason, Wai Lok Woo**  
 **The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS 2026)**
 
-GaugeCast++ is a physics-informed forecasting framework for **localized flood prediction under sparse river-gauge observations**. It learns structured latent dynamics that combine a **gauge-conditioned pullback operator**, **semigroup-consistent phase-transport learning**, and **decoupled inverse rainfall ambiguity modelling**.
-
-Rather than treating flood forecasting as ordinary sequence regression, GaugeCast++ is designed around three failure modes that are particularly important during extreme hydrological events:
-
-- **Transport-dominated dynamics**, where rapidly propagating hydrographs are difficult to evolve directly in observation space.
-- **Long-horizon phase drift**, where predicted flood peaks become progressively shifted in time.
-- **Rainfall-forcing ambiguity**, where forecast errors may originate from uncertain future rainfall rather than from the hydrological model itself.
-
 > **Paper status:** Accepted at **NeurIPS 2026**. Final proceedings and publication links will be added when available.
 
 ---
@@ -29,14 +21,6 @@ Rather than treating flood forecasting as ordinary sequence regression, GaugeCas
 - **Forcing-specific uncertainty diagnosis:** separates uncertainty attributable to future rainfall from deterministic hydrograph prediction.
 - **Sparse-gauge operation:** designed for localized forecasting when dense hydrodynamic observations are unavailable.
 - **Real-world evaluation:** evaluated across multiple UK Environment Agency river-gauge catchments with 15-minute observations and an 8-hour forecast horizon.
-
----
-
-## News
-
-- **2026-11:** GaugeCast++ accepted at **NeurIPS 2026**.
-- **2026-11:** GaugeCast++ hydrological dataset released through the Hugging Face Hub.
-- **2026-11:** Public GaugeCast++ repository released.
 
 ---
 
