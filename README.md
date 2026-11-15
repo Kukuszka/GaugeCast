@@ -38,6 +38,16 @@ GaugeCast++ does not evolve flood dynamics directly in the original observation 
 
 A **gauge-conditioned coordinate map** learns a sample-dependent transformation of the latent domain. Automatic differentiation provides the spatial and temporal derivatives of this learned coordinate field, defining the residual transport coefficient
 
+$$
+B_\psi
+=
+\partial_\tau \phi_\psi
++
+a\,\partial_\xi \phi_\psi
+-
+\nu\,\partial_{\xi\xi}\phi_\psi .
+$$
+
 Training explicitly suppresses residual, encouraging the learned coordinate system to reduce transport dominance in the transformed dynamics. The pullback therefore acts as an **operator preconditioner**: instead of forecasting directly in a transport-dominated coordinate system, GaugeCast++ learns coordinates in which the induced latent evolution is better conditioned and increasingly diffusion dominated.
 
 ---
@@ -248,6 +258,12 @@ For questions regarding GaugeCast++, the dataset, or the experiments, please ope
 
 For research-related enquiries:
 
-**Adrian Kucia**  
-School of Computer Science  
-Northumbria University, UK
+<div align="left">
+
+| Name | Role | Institution | Email |
+|---|---|---|---|
+| Adrian Kucia | Lead Author | School of Computer Science, Northumbria University, UK | adrian.kucia@northumbria.ac.uk |
+| Adrian Kucia | Personal | — | adriankucia2000@gmail.com |
+| Wai Lok Woo | Corresponding Author | School of Computer Science, Northumbria University, UK | wailok.woo@northumbria.ac.uk |
+
+</div>
