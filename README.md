@@ -1,6 +1,6 @@
 # GaugeCast++
 
-[![NeurIPS 2026](https://img.shields.io/badge/NeurIPS-2026-blue.svg)]()
+[![NeurIPS 2026](https://img.shields.io/badge/NeurIPS-2026-blue.svg)](https://neurips.cc/virtual/2026/loc/paris/poster/155744)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)]()
 [![Dataset](https://img.shields.io/badge/Dataset-Hugging%20Face-yellow.svg)](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -10,7 +10,7 @@
 **Adrian Kucia, Edward Rollason, Wai Lok Woo**  
 **The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS 2026)**
 
-> **Paper status:** Accepted at **NeurIPS 2026**. Final proceedings and publication links will be added when available.
+> **Paper status:** Accepted at **NeurIPS 2026**. Poster available at the NeurIPS virtual site.
 
 ---
 
