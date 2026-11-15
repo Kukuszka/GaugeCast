@@ -2,122 +2,244 @@
 
 [![NeurIPS 2026](https://img.shields.io/badge/NeurIPS-2026-blue.svg)]()
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)]()
+[![Dataset](https://img.shields.io/badge/Dataset-Hugging%20Face-yellow.svg)](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**GaugeCast++: A Physics-Informed Latent Forecasting System for Localized Flood Prediction**  
-Adrian Kucia, Edward Rollason, Wai Lok Woo  
-**NeurIPS 2026**
+## GaugeCast++: A Physics-Informed Latent Forecasting System for Localized Flood Prediction
 
-GaugeCast++ is a physics-informed sparse-gauge forecasting framework for localized flood prediction. It combines a gauge-conditioned pullback operator, semigroup-consistent phase-transport learning, and decoupled inverse rainfall ambiguity modelling.
+**Adrian Kucia, Edward Rollason, Wai Lok Woo**  
+**The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS 2026)**
 
-> **Paper status:** NeurIPS 2026 paper link and publication details will be added when available.
+GaugeCast++ is a physics-informed forecasting framework for **localized flood prediction under sparse river-gauge observations**. It learns structured latent dynamics that combine a **gauge-conditioned pullback operator**, **semigroup-consistent phase-transport learning**, and **decoupled inverse rainfall ambiguity modelling**.
+
+Rather than treating flood forecasting as ordinary sequence regression, GaugeCast++ is designed around three failure modes that are particularly important during extreme hydrological events:
+
+- **Transport-dominated dynamics**, where rapidly propagating hydrographs are difficult to evolve directly in observation space.
+- **Long-horizon phase drift**, where predicted flood peaks become progressively shifted in time.
+- **Rainfall-forcing ambiguity**, where forecast errors may originate from uncertain future rainfall rather than from the hydrological model itself.
+
+> **Paper status:** Accepted at **NeurIPS 2026**. Final proceedings and publication links will be added when available.
+
+---
+
+## Highlights
+
+- **Physics-informed latent forecasting:** learns a sample-conditioned coordinate system that reduces residual transport before forecasting the latent dynamics.
+- **Peak-aware temporal consistency:** explicitly regularizes flood-event phase and long-horizon compositional consistency.
+- **Forcing-specific uncertainty diagnosis:** separates uncertainty attributable to future rainfall from deterministic hydrograph prediction.
+- **Sparse-gauge operation:** designed for localized forecasting when dense hydrodynamic observations are unavailable.
+- **Real-world evaluation:** evaluated across multiple UK Environment Agency river-gauge catchments with 15-minute observations and an 8-hour forecast horizon.
+
+---
 
 ## News
 
-- **2026-11-15:** Initial public repository scaffold and project README created.
+- **2026-11:** GaugeCast++ accepted at **NeurIPS 2026**.
+- **2026-11:** GaugeCast++ hydrological dataset released through the Hugging Face Hub.
+- **2026-11:** Public GaugeCast++ repository released.
+
+---
 
 ## Method Overview
 
-GaugeCast++ is designed around the failure modes that are especially important in sparse-gauge flood forecasting: transport-dominated dynamics, temporal misalignment of flood events, and uncertainty in future rainfall forcing. The framework combines physics-informed latent dynamics with event-aware forecasting and a separate post-hoc uncertainty diagnostic.
+GaugeCast++ combines three complementary mechanisms for reliable sparse-gauge flood forecasting.
 
-### Gauge-Conditioned Pullback Dynamics
+### 1. Gauge-Conditioned Pullback Dynamics
 
 <p align="center">
   <img src="assets/Contribution1_Diagram.png" width="100%" alt="Gauge-conditioned pullback dynamics">
 </p>
 
-GaugeCast++ does not evolve flood dynamics directly in the original observation coordinates. Historical water level, rainfall, and forecast rainfall are encoded into latent hydrological states and storage/context representations. A **gauge-conditioned coordinate map** $G_\psi$ then learns a sample-dependent transformation of the latent domain.
+GaugeCast++ does not evolve flood dynamics directly in the original observation coordinates. Historical water level, rainfall, and future rainfall information are first encoded into latent hydrological states, storage memory, and regime context.
 
-Training suppresses $B_\psi$, encouraging the learned coordinate system to remove explicit transport from the latent evolution. The resulting pullback therefore acts as an **operator preconditioner**, transforming transport-dominated flood dynamics into a better-conditioned latent forecasting problem.
+A **gauge-conditioned coordinate map** learns a sample-dependent transformation of the latent domain. Automatic differentiation provides the spatial and temporal derivatives of this learned coordinate field, defining the residual transport coefficient
+
+$$
+B_\psi
+=
+\partial_\tau \phi_\psi
++
+a\,\partial_\xi \phi_\psi
+-
+\nu\,\partial_{\xi\xi}\phi_\psi .
+$$
+
+Training explicitly suppresses \(B_\psi\), encouraging the learned coordinate system to reduce transport dominance in the transformed dynamics.
+
+The pullback therefore acts as an **operator preconditioner**: instead of forecasting directly in a transport-dominated coordinate system, GaugeCast++ learns coordinates in which the induced latent evolution is better conditioned and increasingly diffusion dominated.
 
 ---
 
-### Decoupled Inverse Rainfall Ambiguity
+### 2. Semigroup-Consistent Phase-Transport Learning
+
+Long-horizon flood forecasts may preserve the approximate hydrograph amplitude while gradually drifting in time. In operational forecasting, this is particularly problematic because a correctly predicted flood magnitude can still provide a poor warning if the crest is predicted several hours too early or too late.
+
+GaugeCast++ addresses this using **semigroup-consistent phase-transport learning**.
+
+The model encourages direct long-horizon predictions to remain consistent with the evolution represented by shorter forecast horizons. A differentiable phase representation additionally tracks the temporal distribution of high-stage hydrograph mass.
+
+This jointly regularizes:
+
+- **trajectory-level consistency** across forecast horizons; and
+- **event-phase consistency** of rising limbs, high-water periods, and flood crests.
+
+The objective therefore targets horizon-dependent timing drift directly rather than treating temporal misalignment purely as pointwise prediction error.
+
+---
+
+### 3. Decoupled Inverse Rainfall Ambiguity
 
 <p align="center">
   <img src="assets/Contribution3_Diagram.png" width="100%" alt="Decoupled inverse rainfall ambiguity">
 </p>
 
-Forecast errors can arise either from the hydrological model itself or from inaccurate future rainfall information. GaugeCast++ separates these two sources through a **decoupled inverse rainfall ambiguity module**.
+Forecast errors can arise from deficiencies in the hydrological predictor, but they may also result from inaccurate or uncertain future rainfall forcing.
 
-The trained GaugeCast++ predictor is first frozen. Its hydrograph forecast, latent representation, and physics residual are then used as evidence for an inverse model which estimates a posterior distribution over the unknown rainfall discrepancy. The inferred uncertainty is propagated through the rainfall-to-stage sensitivity of the frozen predictor to obtain a forcing-specific ambiguity score.
+GaugeCast++ separates these sources through a **decoupled inverse rainfall ambiguity module**.
 
-Importantly, this module is **diagnostic rather than corrective**: it does not modify the deterministic GaugeCast++ hydrograph. Instead, it identifies forecast windows in which uncertainty can plausibly be attributed to imperfect future rainfall forcing.
+The trained deterministic predictor is frozen. Its hydrograph forecast, latent representation, rainfall information, and pullback-physics residual are then used as evidence for an inverse model
+
+$$
+q_\psi(\delta r_t \mid Z_t),
+$$
+
+which estimates a posterior distribution over unresolved future-rainfall discrepancy.
+
+The inferred rainfall uncertainty is propagated through the rainfall-to-stage sensitivity of the frozen forecasting system to obtain a **forcing-specific ambiguity score**.
+
+Importantly, this component is **diagnostic rather than corrective**. It does not modify the deterministic GaugeCast++ hydrograph. Instead, it identifies forecast windows in which elevated predictive risk can plausibly be attributed to uncertainty in future rainfall forcing.
+
+---
 
 ## Main Results
 
-GaugeCast++ achieves the strongest overall performance across the six primary UK catchments, with consistent gains in both full test-set forecasting and flood-event prediction.
+GaugeCast++ is evaluated on six primary UK river-gauge catchments using observations sampled at **15-minute resolution**, with **32 historical steps (8 hours)** used to predict the following **32 steps (8 hours)**.
+
+Across the primary benchmark, GaugeCast++ achieves the best MSE and NSE in **21 of 22 evaluated test/event comparisons**.
+
+The largest gains are observed during challenging flood-event windows, including event-MSE reductions of up to **72.6% on Acomb Garden House** and **73.3% on Kielder** relative to the strongest competing baseline.
+
+GaugeCast++ is compared against a broad set of modern forecasting architectures, including **Crossformer, PatchTST, TSMixer, PatchMixer, Mamba, iTransformer, N-HiTS, and N-BEATS**.
 
 <p align="center">
-  <img src="assets/Benchmark_Table.png" width="100%" alt="Main Benchmark Table">
+  <img src="assets/Benchmark_Table.png" width="100%" alt="GaugeCast++ primary benchmark">
 </p>
+
+---
 
 ## Ablation Study
 
-The ablation study evaluates the contribution of the gauge transform, pullback PDE residual, storage dynamics, event-residual branch, and semigroup/phase-consistency objectives.
+Component-wise ablations demonstrate that the performance gains of GaugeCast++ arise from its structural modelling components rather than supervised sequence fitting alone.
+
+Removing the **pullback PDE residual** or **storage dynamics** produces the largest degradation in event-scale performance. The learned gauge transformation, event-residual refinement, and semigroup/phase-consistency objectives provide additional improvements in predictive accuracy and flood-event behaviour.
 
 <p align="center">
-  <img src="assets/Ablation_Table.png" width="100%" alt="Ablation Benchmark Table">
+  <img src="assets/Ablation_Table.png" width="100%" alt="GaugeCast++ ablation study">
 </p>
+
+---
+
+## Extended Evaluation
+
+GaugeCast++ is additionally evaluated across UK monitoring sites with shorter observational records and heterogeneous hydrometeorological inputs.
+
+The extended experiments include combinations of **river level, rainfall, soil volumetric water content, soil temperature, and forecast-side rainfall forcing**, providing a broader evaluation beyond the six primary benchmark catchments.
+
+<details>
+<summary><b>View extended catchment benchmark</b></summary>
+
+<br>
+
+<p align="center">
+  <img src="assets/Extended_Benchmark.png" width="100%" alt="GaugeCast++ extended benchmark">
+</p>
+
+</details>
+
+---
 
 ## Getting Started
 
-### 1. Installation
+### Installation
 
-Clone this repository and install its Python dependencies:
+Clone the repository:
 
 ```bash
-git clone https://github.com/Kukuszka/GaugeCast-.git
-cd GaugeCast-
+git clone https://github.com/Kukuszka/GaugeCast.git
+cd GaugeCast
+```
+
+Install the required Python packages:
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
-Alternatively, create the Conda environment defined in `environment.yml`:
+Alternatively, create the provided Conda environment:
 
 ```bash
 conda env create -f environment.yml
 conda activate gaugecast
 ```
 
-### 2. Data
+---
 
-The UK river-gauge dataset is hosted on the [Hugging Face Hub](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset). Download it into the repository's `data/` directory with the Hugging Face CLI:
+### Data
+
+The GaugeCast++ benchmark is constructed from UK river-level and hydrometeorological monitoring records, including observations obtained from the **Environment Agency Hydrology Data Explorer**.
+
+The six primary river-gauge sites are:
+
+- Acomb Garden House
+- Acomb Millersfield
+- Stocksfield
+- Nunnykirk
+- Knitsley
+- Kielder
+
+The processed dataset associated with this repository is hosted on the **Hugging Face Hub**:
+
+[**GaugeCast EA Dataset**](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset)
+
+Install the Hugging Face CLI:
 
 ```bash
 python -m pip install huggingface_hub
+```
+
+Download the dataset:
+
+```bash
 hf download Kukushkah/GaugeCast_EA_Dataset \
   --repo-type dataset \
   --local-dir data/GaugeCast_EA_Dataset
 ```
 
-The downloaded files will be placed under `data/GaugeCast_EA_Dataset/`. See the dataset's [Hugging Face page](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset) for its description and files. The repository's `data/` contents are ignored by Git, so the dataset will remain local and will not be committed.
+The downloaded files will be stored under:
 
-### 3. Training
+```text
+data/GaugeCast_EA_Dataset/
+```
 
-Training is not implemented yet: `train.py` and `scripts/train_all.sh` are placeholders. Once implemented, select a site configuration from `configs/` (for example, `configs/stocksfield.yaml`) and follow the training command documented here.
+The primary forecasting protocol is:
 
-### 4. Evaluation
+| Setting | Value |
+|---|---|
+| Sampling frequency | 15 minutes |
+| Historical context | 32 steps / 8 hours |
+| Forecast horizon | 32 steps / 8 hours |
+| Primary sites | 6 UK river gauges |
+| Task | Multi-step water-level forecasting |
 
-Evaluation is not implemented yet. `evaluate.py` is currently a placeholder, and no checkpoint evaluation command is available yet.
+The repository's `data/` directory is ignored by Git, so downloaded datasets remain local and are not committed to the repository.
 
-### 5. Reproducing Paper Results
+Please consult the [GaugeCast EA Dataset page](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset) for dataset descriptions, source attribution, preprocessing information, and applicable data-licensing conditions.
 
-The scripts in `scripts/` are currently placeholders, so they do not yet reproduce paper results. The planned entry points include:
-
-- `scripts/reproduce_table1.sh`
-- `scripts/reproduce_table3.sh`
-- `scripts/reproduce_ablation.sh`
-- `scripts/reproduce_uncertainty.sh`
-
-When implemented, experiment outputs can be written to `results/`; see [`results/README.md`](results/README.md).
-
-## Pretrained Models
-
-No pretrained models are available in this repository yet.
+---
 
 ## Citation
 
-If you use this project, please cite the paper when its final publication details are available:
+If you use GaugeCast++ or the associated dataset in your research, please cite:
 
 ```bibtex
 @inproceedings{kucia2026gaugecast,
@@ -128,12 +250,32 @@ If you use this project, please cite the paper when its final publication detail
 }
 ```
 
-The repository also includes [`CITATION.cff`](CITATION.cff).
+The repository also includes [`CITATION.cff`](CITATION.cff) for GitHub-native citation support.
+
+---
 
 ## Acknowledgements
 
-This project is funded by DEFRA (NUM015) as part of the £200 million Flood and Coastal Innovation Programmes which is managed by the Environment Agency. The programmes will drive innovation in flood and coastal resilience and adaptation to a changing climate.
+This project is funded by **DEFRA (NUM015)** as part of the **£200 million Flood and Coastal Innovation Programmes**, managed by the Environment Agency.
+
+The programmes support innovation in flood and coastal resilience and adaptation to a changing climate.
+
+---
+
+## License
+
+The source code in this repository is released under the [MIT License](LICENSE).
+
+Dataset files may be subject to separate licensing and attribution requirements. Please consult the associated dataset page and the original data providers for applicable terms.
+
+---
 
 ## Contact
 
-For questions about this repository, open a GitHub issue. Contact details will be added when available.
+For questions regarding GaugeCast++, the dataset, or the experiments, please open a GitHub issue.
+
+For research-related enquiries:
+
+**Adrian Kucia**  
+School of Computer Science  
+Northumbria University, UK
