@@ -131,7 +131,8 @@ The repository also includes [`CITATION.cff`](CITATION.cff).
 
 ## Acknowledgements
 
-Acknowledgements will be added when the paper and project details are finalized.
+This project is funded by DEFRA (NUM015) as part of the £200 million Flood and Coastal Innovation Programmes which is managed by the
+Environment Agency. The programmes will drive innovation in flood and coastal resilience and adaptation to a changing climate.
 
 ## Contact
 
