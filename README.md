@@ -48,7 +48,9 @@ a\,\partial_\xi \phi_\psi
 \nu\,\partial_{\xi\xi}\phi_\psi .
 $$
 
-Training explicitly suppresses residual, encouraging the learned coordinate system to reduce transport dominance in the transformed dynamics. The pullback therefore acts as an **operator preconditioner**: instead of forecasting directly in a transport-dominated coordinate system, GaugeCast++ learns coordinates in which the induced latent evolution is better conditioned and increasingly diffusion dominated.
+Training explicitly suppresses the pullback residual \(B_\psi\), encouraging the learned coordinate system to reduce transport dominance in the transformed dynamics.
+
+The pullback therefore acts as an **operator preconditioner**: instead of forecasting directly in a transport-dominated coordinate system, GaugeCast++ learns coordinates in which the induced latent evolution is better conditioned and increasingly diffusion dominated.
 
 ---
 
@@ -170,15 +172,6 @@ conda activate gaugecast
 
 The GaugeCast++ benchmark is constructed from UK river-level and hydrometeorological monitoring records, including observations obtained from the **Environment Agency Hydrology Data Explorer**.
 
-The six primary river-gauge sites are:
-
-- Acomb Garden House
-- Acomb Millersfield
-- Stocksfield
-- Nunnykirk
-- Knitsley
-- Kielder
-
 The processed dataset associated with this repository is hosted on the **Hugging Face Hub**:
 
 [**GaugeCast EA Dataset**](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset)
@@ -202,16 +195,6 @@ The downloaded files will be stored under:
 ```text
 data/GaugeCast_EA_Dataset/
 ```
-
-The primary forecasting protocol is:
-
-| Setting | Value |
-|---|---|
-| Sampling frequency | 15 minutes |
-| Historical context | 32 steps / 8 hours |
-| Forecast horizon | 32 steps / 8 hours |
-| Primary sites | 6 UK river gauges |
-| Task | Multi-step water-level forecasting |
 
 The repository's `data/` directory is ignored by Git, so downloaded datasets remain local and are not committed to the repository.
 
@@ -258,12 +241,8 @@ For questions regarding GaugeCast++, the dataset, or the experiments, please ope
 
 For research-related enquiries:
 
-<div align="left">
-
 | Name | Role | Institution | Email |
 |---|---|---|---|
 | Adrian Kucia | Lead Author | School of Computer Science, Northumbria University, UK | adrian.kucia@northumbria.ac.uk |
 | Adrian Kucia | Personal | — | adriankucia2000@gmail.com |
 | Wai Lok Woo | Corresponding Author | School of Computer Science, Northumbria University, UK | wailok.woo@northumbria.ac.uk |
-
-</div>
