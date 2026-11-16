@@ -188,10 +188,11 @@ If you use GaugeCast++ or the associated dataset in your research, please cite:
 
 ```bibtex
 @inproceedings{kucia2026gaugecast,
-  title     = {GaugeCast++: A Physics-Informed Latent Forecasting System for Localized Flood Prediction},
-  author    = {Kucia, Adrian and Rollason, Edward and Woo, Wai Lok},
-  booktitle = {The Fortieth Annual Conference on Neural Information Processing Systems},
-  year      = {2026}
+  title={{GAUGECAST}++: A Physics-Informed Latent Forecasting System for Localized Flood Prediction},
+  author={Adrian Kucia and Edward Rollason and Wai Lok Woo},
+  booktitle={The Fortieth Annual Conference on Neural Information Processing Systems},
+  year={2026},
+  url={https://openreview.net/forum?id=3JmNPDqHqq}
 }
 ```
 
