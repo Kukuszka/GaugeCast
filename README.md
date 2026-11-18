@@ -1,4 +1,4 @@
-# GaugeCast++
+# GaugeCast++ [REPOSITORY IN PROGRESS]
 
 [![NeurIPS 2026](https://img.shields.io/badge/NeurIPS-2026-blue.svg)](https://neurips.cc/virtual/2026/loc/paris/poster/155744)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)]()
