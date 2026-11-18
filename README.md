@@ -1,5 +1,7 @@
 # GaugeCast++ [REPOSITORY IN PROGRESS]
 
+> Note that repository is still in progress, although most of is finished, we still need to test everything so that it works
+
 [![NeurIPS 2026](https://img.shields.io/badge/NeurIPS-2026-blue.svg)](https://neurips.cc/virtual/2026/loc/paris/poster/155744)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)]()
 [![Dataset](https://img.shields.io/badge/Dataset-Hugging%20Face-yellow.svg)](https://huggingface.co/datasets/Kukushkah/GaugeCast_EA_Dataset)
