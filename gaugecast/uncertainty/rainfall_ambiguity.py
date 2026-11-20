@@ -35,6 +35,7 @@ class AmbiguityPosteriorOutput:
 
 
 class RainfallAmbiguityPosterior(nn.Module):
+    """
     Parameters
     ----------
     feature_dim:
