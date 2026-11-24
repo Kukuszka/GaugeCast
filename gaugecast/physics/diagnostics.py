@@ -1,5 +1,3 @@
-"""Paper-aligned pullback diagnostics that do not affect model training."""
-
 from __future__ import annotations
 
 from typing import Dict
